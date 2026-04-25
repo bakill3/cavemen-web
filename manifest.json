@@ -2,15 +2,21 @@
   "manifest_version": 3,
   "name": "Caveman Web",
   "short_name": "Caveman",
-  "version": "0.1.0",
-  "description": "Ask AI chat sites (ChatGPT, Claude, Gemini, DeepSeek) to respond in terse Caveman-style prose. Local only.",
+  "version": "0.2.0",
+  "description": "Ask AI chat sites to respond in terse Caveman-style prose. Local only.",
   "permissions": ["storage"],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
     "https://claude.ai/*",
     "https://gemini.google.com/*",
-    "https://chat.deepseek.com/*"
+    "https://chat.deepseek.com/*",
+    "https://chat.mistral.ai/*",
+    "https://lechat.mistral.ai/*",
+    "https://chat.qwen.ai/*",
+    "https://perplexity.ai/*",
+    "https://www.perplexity.ai/*",
+    "https://poe.com/*"
   ],
   "background": {
     "service_worker": "src/background/service-worker.js"
@@ -38,7 +44,13 @@
         "https://chat.openai.com/*",
         "https://claude.ai/*",
         "https://gemini.google.com/*",
-        "https://chat.deepseek.com/*"
+        "https://chat.deepseek.com/*",
+        "https://chat.mistral.ai/*",
+        "https://lechat.mistral.ai/*",
+        "https://chat.qwen.ai/*",
+        "https://perplexity.ai/*",
+        "https://www.perplexity.ai/*",
+        "https://poe.com/*"
       ],
       "js": [
         "src/shared/browser-polyfill.js",

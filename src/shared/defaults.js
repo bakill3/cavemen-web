@@ -1,19 +1,35 @@
-// Default settings + stats. Loaded into both content scripts and the
-// service worker (via importScripts). Safe to load anywhere — no I/O.
+// Defaults shared by popup, content scripts, and the service worker.
 (function () {
   var DEFAULTS = {
     enabled: true,
     mode: "full", // "lite" | "full" | "ultra" | "wenyan"
+    promptPlacement: "prepend", // "prepend" | "append"
+    previewBeforeSend: false,
+    hotkeys: true,
     showBadge: true,
     visibleInjection: true,
-    debug: false, // when true, logs adapter detection + injection events
+    uiLanguage: "en",
+    debug: false,
     sites: {
       chatgpt: true,
       claude: true,
       gemini: true,
-      deepseek: true
+      deepseek: true,
+      mistral: true,
+      qwen: true,
+      perplexity: true,
+      poe: true
     },
-    // Heuristic only. ~4 chars per token. Output saving is a rough estimate.
+    customPrompts: {
+      chatgpt: "",
+      claude: "",
+      gemini: "",
+      deepseek: "",
+      mistral: "",
+      qwen: "",
+      perplexity: "",
+      poe: ""
+    },
     assumedOutputSavingPct: 0.4,
     stats: {
       promptsEnhanced: 0,

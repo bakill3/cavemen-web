@@ -3,7 +3,7 @@
 
 Prefers ImageMagick (`convert`) for proper anti-aliasing. Falls back to a
 pure-stdlib placeholder generator (no Pillow dependency) when convert is
-absent — useful for CI containers that don't have ImageMagick installed.
+absent - useful for CI containers that don't have ImageMagick installed.
 """
 import os
 import shutil
@@ -110,7 +110,7 @@ def fallback():
 
 def main():
     if not rasterize_with_convert():
-        print("[icons] convert not found — using pure-Python fallback", file=sys.stderr)
+        print("[icons] convert not found - using pure-Python fallback", file=sys.stderr)
         fallback()
 
 

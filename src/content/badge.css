@@ -1,4 +1,3 @@
-/* Cave-stone aesthetic. High z-index because chat sites use overlays. */
 #caveman-web-badge {
   position: fixed;
   right: 16px;
@@ -22,4 +21,63 @@
 #caveman-web-badge:focus-visible {
   outline: 2px solid #c89a4a;
   outline-offset: 2px;
+}
+
+#caveman-web-preview {
+  position: fixed;
+  right: 16px;
+  bottom: 58px;
+  z-index: 2147483647;
+  width: min(520px, calc(100vw - 32px));
+  background: #201c17;
+  color: #f3e8d8;
+  border: 1px solid #5a4a36;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 10px;
+}
+
+.caveman-web-preview-head,
+.caveman-web-preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.caveman-web-preview-head {
+  margin-bottom: 8px;
+}
+
+#caveman-web-preview textarea {
+  width: 100%;
+  min-height: 190px;
+  max-height: 48vh;
+  resize: vertical;
+  background: #120f0c;
+  color: #f3e8d8;
+  border: 1px solid #3a3128;
+  border-radius: 6px;
+  padding: 8px;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+#caveman-web-preview button {
+  background: #312a22;
+  color: #f3e8d8;
+  border: 1px solid #5a4a36;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font: inherit;
+}
+
+#caveman-web-preview button:hover {
+  filter: brightness(1.15);
+}
+
+#caveman-web-preview [data-caveman-send] {
+  background: #8a6f3a;
+  border-color: #a78645;
 }

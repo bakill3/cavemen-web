@@ -1,9 +1,4 @@
-// Per-site adapters. Each exposes the same interface so content-script.js
-// stays site-agnostic. Selectors prefer ARIA / role / id over hashed CSS
-// classes. Adjust `findEditor` / `findSendButton` first when a site breaks.
-//
-// Privacy: these functions only locate DOM nodes. They never read messages
-// from chat history, only the editor (input area) the user is typing into.
+// Per-site editor and send-button adapters.
 (function () {
   var dom = globalThis.CavemanWeb.dom;
 
@@ -30,9 +25,6 @@
     return true;
   }
 
-  // Helper: find a send-button candidate scoped to the editor's nearest
-  // form / toolbar ancestor. Reduces false positives from page-wide
-  // role="button" matches (notably on DeepSeek).
   function scopedSendButton(editor, selectors) {
     if (!editor) return null;
     var scope = editor.closest("form") ||
@@ -42,16 +34,38 @@
     for (var i = 0; i < selectors.length && scope; i++) {
       var node = scope.querySelector(selectors[i]);
       if (node) return node;
-      // Walk up two levels max — editor toolbars are usually 1-3 ancestors deep.
       var up1 = scope.parentElement;
       if (up1) {
         node = up1.querySelector(selectors[i]);
         if (node) return node;
       }
     }
-    // Fallback to document-wide scan for the first selector only, so adapters
-    // don't silently break on unusual layouts.
     return document.querySelector(selectors[0]) || null;
+  }
+
+  function genericEditor() {
+    var selectors = [
+      'textarea',
+      'div[contenteditable="true"][role="textbox"]',
+      'div[contenteditable="true"]',
+      '[role="textbox"]'
+    ];
+    for (var i = 0; i < selectors.length; i++) {
+      var nodes = document.querySelectorAll(selectors[i]);
+      for (var j = 0; j < nodes.length; j++) {
+        if (dom.isVisible(nodes[j])) return nodes[j];
+      }
+    }
+    return null;
+  }
+
+  function genericSend(editor) {
+    return scopedSendButton(editor, [
+      'button[aria-label*="Send" i]',
+      'button[data-testid*="send" i]',
+      'button[type="submit"]',
+      '[role="button"][aria-label*="Send" i]'
+    ]);
   }
 
   // -------- ChatGPT --------
@@ -134,9 +148,6 @@
     submit: clickIfEnabled
   };
 
-  // -------- DeepSeek --------
-  // DeepSeek historically uses a div[role="button"] for send. Scope to the
-  // editor's container so we never click an unrelated button on the page.
   var deepseek = {
     key: "deepseek",
     matches: function () {
@@ -173,7 +184,63 @@
     submit: clickIfEnabled
   };
 
-  // -------- Generic fallback (NOT used in production via manifest matches) --------
+  var mistral = {
+    key: "mistral",
+    matches: function () {
+      return /(^|\.)chat\.mistral\.ai$/.test(location.hostname) ||
+             /(^|\.)lechat\.mistral\.ai$/.test(location.hostname);
+    },
+    findEditor: genericEditor,
+    findSendButton: function () {
+      return genericSend(this.findEditor());
+    },
+    setEditorText: setEditorText,
+    getEditorText: getEditorText,
+    submit: clickIfEnabled
+  };
+
+  var qwen = {
+    key: "qwen",
+    matches: function () {
+      return /(^|\.)chat\.qwen\.ai$/.test(location.hostname);
+    },
+    findEditor: genericEditor,
+    findSendButton: function () {
+      return genericSend(this.findEditor());
+    },
+    setEditorText: setEditorText,
+    getEditorText: getEditorText,
+    submit: clickIfEnabled
+  };
+
+  var perplexity = {
+    key: "perplexity",
+    matches: function () {
+      return /(^|\.)perplexity\.ai$/.test(location.hostname);
+    },
+    findEditor: genericEditor,
+    findSendButton: function () {
+      return genericSend(this.findEditor());
+    },
+    setEditorText: setEditorText,
+    getEditorText: getEditorText,
+    submit: clickIfEnabled
+  };
+
+  var poe = {
+    key: "poe",
+    matches: function () {
+      return /(^|\.)poe\.com$/.test(location.hostname);
+    },
+    findEditor: genericEditor,
+    findSendButton: function () {
+      return genericSend(this.findEditor());
+    },
+    setEditorText: setEditorText,
+    getEditorText: getEditorText,
+    submit: clickIfEnabled
+  };
+
   var fallback = {
     key: "generic",
     matches: function () { return true; },
@@ -196,7 +263,7 @@
   };
 
   function pickAdapter() {
-    var ordered = [chatgpt, claude, gemini, deepseek];
+    var ordered = [chatgpt, claude, gemini, deepseek, mistral, qwen, perplexity, poe];
     for (var i = 0; i < ordered.length; i++) {
       if (ordered[i].matches()) return ordered[i];
     }
@@ -209,6 +276,10 @@
     claude: claude,
     gemini: gemini,
     deepseek: deepseek,
+    mistral: mistral,
+    qwen: qwen,
+    perplexity: perplexity,
+    poe: poe,
     fallback: fallback,
     pickAdapter: pickAdapter
   };

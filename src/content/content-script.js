@@ -1,20 +1,4 @@
-// Caveman Web content script.
-//
-// Privacy contract:
-//   * We only read the editor element the user is typing into.
-//   * We never read, persist, or transmit any chat-history message text.
-//   * We never store prompt or response text — only numeric counters.
-//   * We never make network requests.
-//
-// Submission flow:
-//   1. User presses Enter (no Shift) or clicks the send button.
-//   2. We intercept in the capture phase and call preventDefault().
-//   3. We rewrite the editor with `[Caveman <mode>] <instruction>\n---\n<text>`.
-//   4. We click the site's send button. The marker prevents re-injection.
-//
-// We listen on `document` because send buttons are not always inside the
-// editor container; we early-exit on every event that is not an Enter key
-// in the editor or a click on the send button.
+// Main content script. It only touches the active editor and local counters.
 (function () {
   var ns = globalThis.CavemanWeb;
   if (!ns) return;
@@ -22,6 +6,8 @@
   var state = null;
   var processing = false;
   var debugFromUrl = false;
+  var previewEl = null;
+  var pendingPreview = null;
 
   try {
     debugFromUrl = /[?&]caveman-debug=1\b/.test(location.search);
@@ -51,6 +37,7 @@
     var d = ns.defaults;
     var merged = Object.assign({}, d, obj || {});
     merged.sites = Object.assign({}, d.sites, (obj && obj.sites) || {});
+    merged.customPrompts = Object.assign({}, d.customPrompts, (obj && obj.customPrompts) || {});
     merged.stats = Object.assign({}, d.stats, (obj && obj.stats) || {});
     return merged;
   }
@@ -95,18 +82,32 @@
     await ns.storage.set({ stats: stats });
   }
 
-  async function injectIntoEditor(adapter, editor) {
+  function customPromptFor(adapter) {
+    if (!adapter || !state || !state.customPrompts) return "";
+    return state.customPrompts[adapter.key] || "";
+  }
+
+  function buildPrompt(adapter, userText) {
+    return ns.prompt.build(state.mode, userText, {
+      customPrompt: customPromptFor(adapter),
+      placement: state.promptPlacement
+    });
+  }
+
+  function currentInstruction(adapter) {
+    return ns.prompt.getInstruction(state.mode, customPromptFor(adapter));
+  }
+
+  async function injectIntoEditor(adapter, editor, overrideText) {
     var current = (adapter.getEditorText(editor) || "").trim();
     if (!current) return false;
     if (ns.prompt.hasMarker(current)) {
       dlog("skip injection: marker already present");
       return false;
     }
-    var built = ns.prompt.build(state.mode, current);
+    var built = overrideText || buildPrompt(adapter, current);
     adapter.setEditorText(editor, built);
-    // Stats only — we pass the user text length to the estimator and then
-    // drop the variable from scope. Nothing is persisted but counts.
-    await bumpStats(current, ns.prompt.getInstruction(state.mode));
+    await bumpStats(current, currentInstruction(adapter));
     dlog("injected", { adapter: adapter.key, mode: state.mode, chars: current.length });
     return true;
   }
@@ -118,7 +119,74 @@
     return editor === t || (editor.contains && editor.contains(t));
   }
 
+  function closePreview() {
+    if (previewEl && previewEl.parentNode) previewEl.parentNode.removeChild(previewEl);
+    previewEl = null;
+    pendingPreview = null;
+  }
+
+  function showPreview(adapter, editor, text) {
+    closePreview();
+    pendingPreview = { adapter: adapter, editor: editor, original: text };
+
+    previewEl = document.createElement("div");
+    previewEl.id = "caveman-web-preview";
+    previewEl.innerHTML =
+      '<div class="caveman-web-preview-head">' +
+        '<strong>Caveman draft</strong>' +
+        '<button type="button" data-caveman-close aria-label="Close">x</button>' +
+      '</div>' +
+      '<textarea spellcheck="false"></textarea>' +
+      '<div class="caveman-web-preview-actions">' +
+        '<button type="button" data-caveman-cancel>Cancel</button>' +
+        '<button type="button" data-caveman-send>Send</button>' +
+      '</div>';
+
+    var textarea = previewEl.querySelector("textarea");
+    textarea.value = buildPrompt(adapter, text);
+
+    previewEl.querySelector("[data-caveman-close]").addEventListener("click", closePreview);
+    previewEl.querySelector("[data-caveman-cancel]").addEventListener("click", closePreview);
+    previewEl.querySelector("[data-caveman-send]").addEventListener("click", async function () {
+      if (!pendingPreview) return;
+      processing = true;
+      try {
+        await injectIntoEditor(pendingPreview.adapter, pendingPreview.editor, textarea.value);
+        closePreview();
+        await new Promise(function (r) { requestAnimationFrame(function () { r(); }); });
+        var btn = adapter.findSendButton();
+        if (btn) adapter.submit(btn);
+      } finally {
+        setTimeout(function () { processing = false; }, 250);
+      }
+    });
+
+    document.documentElement.appendChild(previewEl);
+    textarea.focus();
+  }
+
+  function maybePreview(adapter, editor, text) {
+    if (!state.previewBeforeSend) return false;
+    showPreview(adapter, editor, text);
+    return true;
+  }
+
   async function handleKeyDown(e) {
+    if (state && state.hotkeys && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+      if (String(e.key).toLowerCase() === "m") {
+        e.preventDefault();
+        await cycleMode();
+        return;
+      }
+      if (String(e.key).toLowerCase() === "e") {
+        e.preventDefault();
+        state.enabled = !state.enabled;
+        await ns.storage.set({ enabled: state.enabled });
+        updateBadge();
+        return;
+      }
+    }
+
     if (processing) return;
     if (!state || !state.enabled) return;
     if (e.key !== "Enter") return;
@@ -136,7 +204,7 @@
     if (!text) return;
     if (ns.prompt.hasMarker(text)) {
       dlog("Enter: marker present, letting site handle send");
-      return; // do NOT preventDefault — let site send the already-marked text
+      return; // do NOT preventDefault - let site send the already-marked text
     }
 
     processing = true;
@@ -144,6 +212,7 @@
     e.stopImmediatePropagation();
 
     try {
+      if (maybePreview(adapter, editor, text)) return;
       await injectIntoEditor(adapter, editor);
       await new Promise(function (r) { requestAnimationFrame(function () { r(); }); });
       var btn = adapter.findSendButton();
@@ -163,9 +232,9 @@
     var adapter = activeAdapter();
     if (!siteEnabled(adapter)) return;
     var clicked = e.target && e.target.closest ? e.target.closest('button, [role="button"]') : null;
-    if (!clicked) return; // not a button click — let it pass
+    if (!clicked) return; // not a button click - let it pass
     var sendBtn = adapter.findSendButton();
-    if (!sendBtn) return; // can't identify send → don't interfere
+    if (!sendBtn) return; // can't identify send, so leave it alone
     if (clicked !== sendBtn && !sendBtn.contains(clicked) && !clicked.contains(sendBtn)) return;
 
     var editor = adapter.findEditor();
@@ -185,6 +254,7 @@
     e.stopImmediatePropagation();
 
     try {
+      if (maybePreview(adapter, editor, text)) return;
       await injectIntoEditor(adapter, editor);
       await new Promise(function (r) { requestAnimationFrame(function () { r(); }); });
       var fresh = adapter.findSendButton();
@@ -216,6 +286,7 @@
       state[k] = changes[k].newValue;
     });
     if (!state.sites) state.sites = ns.defaults.sites;
+    if (!state.customPrompts) state.customPrompts = ns.defaults.customPrompts;
     if (!state.stats) state.stats = ns.defaults.stats;
     updateBadge();
   });

@@ -1,6 +1,4 @@
-// Thin Promise wrapper around browser.storage.local.
-// Privacy: only this module touches storage. We never store chat content;
-// see content-script.js for what flows in.
+// Promise wrapper around browser.storage.local.
 (function () {
   var api =
     typeof globalThis.browser !== "undefined" && globalThis.browser.storage

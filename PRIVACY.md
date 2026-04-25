@@ -1,4 +1,4 @@
-# Privacy Policy — Caveman Web
+# Privacy Policy - Caveman Web
 
 _Last updated: 2026-04-25_
 
@@ -14,19 +14,21 @@ with your data.
 - **No analytics, no telemetry, no third parties.**
 
 If you want a one-line privacy statement: _"Caveman Web reads what you are
-about to send so it can prepend a short instruction. Then it forgets."_
+about to send so it can add a short instruction. Then it forgets."_
 
 ## What Caveman Web does
 
-When you visit one of the four supported AI chat sites
+When you visit a supported AI chat site
 (`chatgpt.com`, `chat.openai.com`, `claude.ai`, `gemini.google.com`,
-`chat.deepseek.com`), the extension's content script runs in the page.
+`chat.deepseek.com`, `chat.mistral.ai`, `lechat.mistral.ai`,
+`chat.qwen.ai`, `perplexity.ai`, `www.perplexity.ai`, or `poe.com`), the
+extension's content script runs in the page.
 
 When you press Enter or click the site's send button, the extension:
 
 1. Reads the text you just typed in the chat input box.
-2. Prepends a short Caveman-mode instruction (e.g. _"Reply concise. Reduce
-   filler…"_) to that text.
+2. Adds a Caveman-mode instruction before or after that text, depending on
+   your setting.
 3. Asks the site to send the combined text by clicking its own send button.
 4. Increments a few **numeric counters** in local storage (how many prompts
    were enhanced, an estimate of how many tokens were added).
@@ -51,10 +53,15 @@ isolated to the extension and is removed when you uninstall it.
 |---|---|---|
 | `enabled` | boolean | Global on/off |
 | `mode` | string | `lite` / `full` / `ultra` / `wenyan` |
+| `promptPlacement` | string | Put the instruction before or after your prompt |
+| `previewBeforeSend` | boolean | Show the editable draft panel before sending |
+| `hotkeys` | boolean | Enable or disable keyboard shortcuts |
 | `showBadge` | boolean | Show the on-page indicator |
-| `visibleInjection` | boolean | UI preference (no behavioural difference in v0.1) |
+| `visibleInjection` | boolean | UI preference. Hidden request editing is not used |
+| `uiLanguage` | string | Popup language |
 | `debug` | boolean | Enables console logging in the page DevTools |
 | `sites` | object | Per-site enable flags |
+| `customPrompts` | object | Optional per-site instruction text you write |
 | `assumedOutputSavingPct` | number | Used by the stats estimator |
 | `stats` | object | Four integer counters (see below) |
 
@@ -81,16 +88,19 @@ timestamps, hostnames, model names, IP addresses, or any user identifier.
   browser uses internally).
 - Identifiers of any kind.
 
+Custom prompt overrides are stored because you typed them into the extension
+settings. They are never sent anywhere by the extension.
+
 ## Permissions
 
 | Permission | Why we need it |
 |---|---|
 | `storage` | Save your settings and the four numeric counters above, locally only. |
-| Host: `chatgpt.com`, `chat.openai.com`, `claude.ai`, `gemini.google.com`, `chat.deepseek.com` | Run the content script on these chat sites so it can prepend the instruction to your prompt. |
+| Host permissions for supported chat sites | Run the content script on those sites so it can add the instruction to your prompt. |
 
 We do not request `tabs`, `activeTab`, `webRequest`, `cookies`,
-`history`, `bookmarks`, `<all_urls>`, or any host beyond the five domains
-above.
+`history`, `bookmarks`, `<all_urls>`, or hosts outside the supported chat
+sites.
 
 ## Third parties
 

@@ -1,10 +1,7 @@
-// Service worker. Kept minimal: seeds defaults on install/update.
-// Uses importScripts (classic SW) so we can share defaults.js verbatim
-// with content scripts and popup. Avoid module mode for compat simplicity.
+// Seeds defaults on install/update.
 self.importScripts("/src/shared/defaults.js");
 
 self.addEventListener("install", function () {
-  // Activate immediately so the popup can rely on defaults right after install.
   self.skipWaiting && self.skipWaiting();
 });
 
@@ -14,6 +11,7 @@ chrome.runtime.onInstalled.addListener(async function () {
     var defaults = self.CAVEMAN_DEFAULTS;
     var merged = Object.assign({}, defaults, stored);
     merged.sites = Object.assign({}, defaults.sites, stored.sites || {});
+    merged.customPrompts = Object.assign({}, defaults.customPrompts, stored.customPrompts || {});
     merged.stats = Object.assign({}, defaults.stats, stored.stats || {});
     await chrome.storage.local.set(merged);
   } catch (err) {

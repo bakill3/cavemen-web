@@ -1,5 +1,4 @@
-// Floating on-page badge. Click cycles modes via a custom event so the
-// content script stays the only place that touches storage.
+// Floating badge. Click cycles modes through the content script.
 (function () {
   var el = null;
 
@@ -9,7 +8,7 @@
     el.id = "caveman-web-badge";
     el.setAttribute("role", "button");
     el.setAttribute("tabindex", "0");
-    el.title = "Caveman Web — click to cycle mode";
+    el.title = "Caveman Web - click to cycle mode";
     el.addEventListener("click", function (e) {
       e.stopPropagation();
       window.dispatchEvent(new CustomEvent("caveman:cycle-mode"));

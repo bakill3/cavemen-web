@@ -1,6 +1,6 @@
 {
   "name": "caveman-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Browser extension that asks AI chat sites to respond in terse Caveman-style prose.",
   "private": true,
   "license": "MIT",
