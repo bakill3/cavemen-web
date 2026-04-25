@@ -1,0 +1,25 @@
+/* Cave-stone aesthetic. High z-index because chat sites use overlays. */
+#caveman-web-badge {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  background: linear-gradient(180deg, #3a342c 0%, #2a2520 100%);
+  color: #f3e8d8;
+  font: 600 11px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.08em;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #5a4a36;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+#caveman-web-badge:hover { filter: brightness(1.15); }
+#caveman-web-badge:focus-visible {
+  outline: 2px solid #c89a4a;
+  outline-offset: 2px;
+}

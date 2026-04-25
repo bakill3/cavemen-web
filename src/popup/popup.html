@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Caveman Web</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">🪨</div>
+    <div>
+      <h1>Caveman Web</h1>
+      <p class="sub">Ask AI to talk like caveman.</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <label class="row toggle">
+      <span>Enable Caveman</span>
+      <input type="checkbox" id="enabled" />
+    </label>
+  </section>
+
+  <section class="card">
+    <h2>Mode</h2>
+    <div class="modes">
+      <label><input type="radio" name="mode" value="lite" /><span>Lite</span></label>
+      <label><input type="radio" name="mode" value="full" /><span>Full</span></label>
+      <label><input type="radio" name="mode" value="ultra" /><span>Ultra</span></label>
+      <label><input type="radio" name="mode" value="wenyan" /><span>Wenyan 文言文</span></label>
+    </div>
+    <p class="muted" id="mode-preview"></p>
+  </section>
+
+  <section class="card">
+    <h2>Sites</h2>
+    <label class="row toggle"><span>ChatGPT</span><input type="checkbox" data-site="chatgpt" /></label>
+    <label class="row toggle"><span>Claude</span><input type="checkbox" data-site="claude" /></label>
+    <label class="row toggle"><span>Gemini</span><input type="checkbox" data-site="gemini" /></label>
+    <label class="row toggle"><span>DeepSeek</span><input type="checkbox" data-site="deepseek" /></label>
+  </section>
+
+  <section class="card">
+    <h2>Display</h2>
+    <label class="row toggle"><span>Show on-page badge</span><input type="checkbox" id="showBadge" /></label>
+    <label class="row toggle"><span>Visible injection in prompt</span><input type="checkbox" id="visibleInjection" /></label>
+    <p class="muted">Heads-up: the instruction usually appears in chat history. True hidden injection is not possible without backend access.</p>
+    <details class="advanced">
+      <summary>Advanced</summary>
+      <label class="row toggle"><span>Debug logging (console)</span><input type="checkbox" id="debug" /></label>
+      <p class="muted">Or append <code>?caveman-debug=1</code> to the URL.</p>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>Stats <button type="button" id="resetStats" class="link">reset</button></h2>
+    <div class="stats">
+      <div><strong id="stat-prompts">0</strong><span>prompts enhanced</span></div>
+      <div><strong id="stat-instr">0</strong><span>instruction tokens added</span></div>
+      <div><strong id="stat-user">0</strong><span>user prompt tokens</span></div>
+      <div><strong id="stat-saved">0</strong><span>est. saved output tokens</span></div>
+    </div>
+    <p class="muted">Stats are estimates. ~4 chars ≈ 1 token. Output savings assume 40%. No chat text is stored.</p>
+  </section>
+
+  <footer>No tracking. No chat storage. Local only.</footer>
+
+  <script src="../shared/browser-polyfill.js"></script>
+  <script src="../shared/defaults.js"></script>
+  <script src="../shared/token-estimator.js"></script>
+  <script src="../shared/prompt-builder.js"></script>
+  <script src="../shared/storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
