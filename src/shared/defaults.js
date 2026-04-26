@@ -30,12 +30,12 @@
       perplexity: "",
       poe: ""
     },
-    assumedOutputSavingPct: 0.4,
     stats: {
       promptsEnhanced: 0,
       instructionTokens: 0,
       userPromptTokens: 0,
-      estSavedOutputTokens: 0
+      estSavedOutputTokens: 0,
+      estNetSavedTokens: 0
     }
   };
 

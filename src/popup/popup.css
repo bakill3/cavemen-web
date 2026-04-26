@@ -15,6 +15,22 @@ header {
   gap: 12px;
   margin-bottom: 14px;
 }
+header > div { flex: 1; }
+.status {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #3a3128;
+  color: #a99e87;
+  background: #1c1814;
+}
+.status.on {
+  color: #f3d99a;
+  border-color: #8a6f3a;
+  background: #2a2218;
+}
 .logo { font-size: 28px; line-height: 1; }
 h1 {
   font-size: 15px;
@@ -210,3 +226,41 @@ footer {
   border: 1px solid #3a3128;
   font-size: 10px;
 }
+
+.info {
+  margin: 4px 0 10px;
+  padding: 0 4px;
+}
+.info summary {
+  cursor: pointer;
+  font-size: 11px;
+  color: #c1b291;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  list-style: none;
+  user-select: none;
+  padding: 6px 0;
+}
+.info summary::-webkit-details-marker { display: none; }
+.info summary::before { content: "▸ "; color: #8a7e66; }
+.info[open] summary::before { content: "▾ "; }
+
+.steps {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  color: #d8cfba;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.example blockquote {
+  margin: 4px 0 8px;
+  padding: 8px 10px;
+  background: #1c1814;
+  border-left: 2px solid #5a4a36;
+  border-radius: 0 6px 6px 0;
+  color: #ece4d3;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.example .muted { margin: 6px 0 2px; }

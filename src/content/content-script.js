@@ -71,12 +71,14 @@
   async function bumpStats(userText, instruction) {
     var userTok = ns.tokens.estimate(userText);
     var instrTok = ns.tokens.estimate(instruction);
-    var savedTok = Math.round(userTok * (state.assumedOutputSavingPct || 0.4));
+    var savedTok = Math.round(userTok * ns.tokens.savingPct(state.mode));
+    var net = Math.max(0, savedTok - instrTok);
     var stats = {
       promptsEnhanced: (state.stats.promptsEnhanced || 0) + 1,
       instructionTokens: (state.stats.instructionTokens || 0) + instrTok,
       userPromptTokens: (state.stats.userPromptTokens || 0) + userTok,
-      estSavedOutputTokens: (state.stats.estSavedOutputTokens || 0) + savedTok
+      estSavedOutputTokens: (state.stats.estSavedOutputTokens || 0) + savedTok,
+      estNetSavedTokens: (state.stats.estNetSavedTokens || 0) + net
     };
     state.stats = stats;
     await ns.storage.set({ stats: stats });
@@ -134,31 +136,54 @@
     previewEl.innerHTML =
       '<div class="caveman-web-preview-head">' +
         '<strong>Caveman draft</strong>' +
+        '<span class="caveman-web-preview-mode" data-caveman-mode></span>' +
         '<button type="button" data-caveman-close aria-label="Close">x</button>' +
       '</div>' +
-      '<textarea spellcheck="false"></textarea>' +
+      '<label class="caveman-web-preview-label">Original</label>' +
+      '<div class="caveman-web-preview-original" data-caveman-original></div>' +
+      '<label class="caveman-web-preview-label">Enhanced (with Caveman instruction)</label>' +
+      '<textarea data-caveman-enhanced spellcheck="false"></textarea>' +
       '<div class="caveman-web-preview-actions">' +
         '<button type="button" data-caveman-cancel>Cancel</button>' +
-        '<button type="button" data-caveman-send>Send</button>' +
+        '<button type="button" data-caveman-send-original>Send original</button>' +
+        '<button type="button" data-caveman-send class="primary">Send enhanced</button>' +
       '</div>';
 
-    var textarea = previewEl.querySelector("textarea");
+    previewEl.querySelector("[data-caveman-mode]").textContent = String(state.mode || "full").toUpperCase();
+    previewEl.querySelector("[data-caveman-original]").textContent = text;
+    var textarea = previewEl.querySelector("[data-caveman-enhanced]");
     textarea.value = buildPrompt(adapter, text);
+
+    function sendWith(value, opts) {
+      if (!pendingPreview) return;
+      processing = true;
+      var ad = pendingPreview.adapter;
+      var ed = pendingPreview.editor;
+      var bumped = !!(opts && opts.bumpStats);
+      (async function () {
+        try {
+          var current = (ad.getEditorText(ed) || "").trim();
+          if (current && !ns.prompt.hasMarker(current)) {
+            ad.setEditorText(ed, value);
+            if (bumped) await bumpStats(text, currentInstruction(ad));
+          }
+          closePreview();
+          await new Promise(function (r) { requestAnimationFrame(function () { r(); }); });
+          var btn = ad.findSendButton();
+          if (btn) ad.submit(btn);
+        } finally {
+          setTimeout(function () { processing = false; }, 250);
+        }
+      })();
+    }
 
     previewEl.querySelector("[data-caveman-close]").addEventListener("click", closePreview);
     previewEl.querySelector("[data-caveman-cancel]").addEventListener("click", closePreview);
-    previewEl.querySelector("[data-caveman-send]").addEventListener("click", async function () {
-      if (!pendingPreview) return;
-      processing = true;
-      try {
-        await injectIntoEditor(pendingPreview.adapter, pendingPreview.editor, textarea.value);
-        closePreview();
-        await new Promise(function (r) { requestAnimationFrame(function () { r(); }); });
-        var btn = adapter.findSendButton();
-        if (btn) adapter.submit(btn);
-      } finally {
-        setTimeout(function () { processing = false; }, 250);
-      }
+    previewEl.querySelector("[data-caveman-send]").addEventListener("click", function () {
+      sendWith(textarea.value, { bumpStats: true });
+    });
+    previewEl.querySelector("[data-caveman-send-original]").addEventListener("click", function () {
+      sendWith(text, { bumpStats: false });
     });
 
     document.documentElement.appendChild(previewEl);

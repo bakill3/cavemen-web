@@ -8,13 +8,15 @@ is clean.
 1. Load unpacked from `chrome://extensions` (Developer mode on).
 2. Pin the toolbar icon.
 3. Open the popup. Confirm:
+   - [ ] Status pill in the header reads **On**.
    - [ ] **Enable Caveman** is on.
    - [ ] Mode is **Full**.
+   - [ ] Token estimate card shows zeros and the "Estimates only" note.
    - [ ] All listed sites are enabled.
    - [ ] Placement is **Before prompt**.
    - [ ] Preview before send is off.
    - [ ] Hotkeys are on.
-   - [ ] Stats are all zero.
+   - [ ] How it works and Before / after sections expand.
 4. Open the Advanced panel and tick **Debug logging**. Open DevTools / Console
    on the test tab. You should see lines starting `[Caveman Web]`.
    *Alternative:* append `?caveman-debug=1` to the URL.
@@ -32,7 +34,7 @@ is clean.
 | 7 | Re-enable; switch mode to **Ultra** in popup | Badge updates to `CAVEMAN ULTRA` immediately |
 | 8 | Send another message | Prefix is `[Caveman ultra] CAVEMAN ULTRA` |
 | 9 | Set placement to **After prompt**, send `hello` | Caveman marker appears after the prompt |
-| 10 | Enable preview, send `hello` | Draft panel opens; clicking Send submits the edited draft |
+| 10 | Enable preview, send `hello` | Draft panel opens with Original, Enhanced, and three buttons (Cancel, Send original, Send enhanced). Send enhanced submits the edited draft and bumps stats. Send original sends `hello` unchanged and does not bump stats. |
 | 11 | Set a ChatGPT custom prompt, send | Custom prompt is used instead of the selected mode text |
 | 12 | Press `Ctrl+Shift+M` on the page | Mode changes and the badge updates |
 | 13 | Press `Ctrl+Shift+E` on the page | Extension toggles on/off |

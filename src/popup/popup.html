@@ -13,6 +13,7 @@
       <h1>Caveman Web</h1>
       <p class="sub" data-i18n="tagline">Make AI answer shorter.</p>
     </div>
+    <span class="status" id="status-pill" data-i18n="statusOff">Off</span>
   </header>
 
   <section class="card">
@@ -31,6 +32,20 @@
       <label><input type="radio" name="mode" value="wenyan" /><span>Wenyan 文言文</span></label>
     </div>
     <p class="muted" id="mode-preview"></p>
+  </section>
+
+  <section class="card">
+    <h2>
+      <span data-i18n="tokens">Token estimate</span>
+      <button type="button" id="resetStats" class="link" data-i18n="reset">reset</button>
+    </h2>
+    <div class="stats">
+      <div><strong id="stat-prompts">0</strong><span data-i18n="statPrompts">prompts enhanced</span></div>
+      <div><strong id="stat-saved">0</strong><span data-i18n="statSaved">est. saved output tokens</span></div>
+      <div><strong id="stat-instr">0</strong><span data-i18n="statInstr">instruction tokens added</span></div>
+      <div><strong id="stat-net">0</strong><span data-i18n="statNet">est. net tokens saved</span></div>
+    </div>
+    <p class="muted" data-i18n="statsHelp">Estimates only. No chat text stored.</p>
   </section>
 
   <section class="card">
@@ -53,8 +68,8 @@
       <label>
         <span data-i18n="placement">Instruction</span>
         <select id="promptPlacement">
-          <option value="prepend">Before prompt</option>
-          <option value="append">After prompt</option>
+          <option value="prepend" data-i18n="before">Before prompt</option>
+          <option value="append" data-i18n="after">After prompt</option>
         </select>
       </label>
       <label>
@@ -74,7 +89,7 @@
     <h2 data-i18n="custom">Custom prompt</h2>
     <select id="customSite"></select>
     <textarea id="customPrompt" rows="4" spellcheck="true" placeholder="Leave empty to use the selected mode."></textarea>
-    <button type="button" id="clearCustom" class="link">clear custom prompt</button>
+    <button type="button" id="clearCustom" class="link" data-i18n="clearCustom">clear custom prompt</button>
   </section>
 
   <section class="card">
@@ -89,18 +104,27 @@
     </details>
   </section>
 
-  <section class="card">
-    <h2>Stats <button type="button" id="resetStats" class="link">reset</button></h2>
-    <div class="stats">
-      <div><strong id="stat-prompts">0</strong><span>prompts enhanced</span></div>
-      <div><strong id="stat-instr">0</strong><span>instruction tokens added</span></div>
-      <div><strong id="stat-user">0</strong><span>user prompt tokens</span></div>
-      <div><strong id="stat-saved">0</strong><span>est. saved output tokens</span></div>
-    </div>
-    <p class="muted" data-i18n="statsHelp">Stats are local estimates. No chat text is stored.</p>
-  </section>
+  <details class="info">
+    <summary data-i18n="howTitle">How it works</summary>
+    <ul class="steps">
+      <li data-i18n="how1">You write your message normally.</li>
+      <li data-i18n="how2">Caveman Web adds a short instruction locally before send.</li>
+      <li data-i18n="how3">The AI site answers shorter. Sometimes a lot shorter.</li>
+      <li data-i18n="how4">Settings stay on your device. Token counts are estimates.</li>
+    </ul>
+  </details>
 
-  <footer data-i18n="footer">No tracking. No chat storage. Local only.</footer>
+  <details class="info">
+    <summary data-i18n="examplesTitle">Before / after</summary>
+    <div class="example">
+      <p class="muted" data-i18n="exNormal">Normal</p>
+      <blockquote>Your React component is re-rendering because you create a new object reference on each render. React sees it as changed and renders again.</blockquote>
+      <p class="muted" data-i18n="exCaveman">Caveman</p>
+      <blockquote>New object ref each render. React sees change. Re-render. Use useMemo.</blockquote>
+    </div>
+  </details>
+
+  <footer data-i18n="footer">Local only. No tracking. No chat storage.</footer>
 
   <script src="../shared/browser-polyfill.js"></script>
   <script src="../shared/defaults.js"></script>

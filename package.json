@@ -6,6 +6,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "node --check src/background/service-worker.js && node --check src/content/content-script.js && node --check src/content/site-adapters.js && node --check src/content/dom-utils.js && node --check src/content/badge.js && node --check src/popup/popup.js && node --check src/shared/browser-polyfill.js && node --check src/shared/defaults.js && node --check src/shared/prompt-builder.js && node --check src/shared/storage.js && node --check src/shared/token-estimator.js",
+    "test": "node scripts/run-tests.js",
+    "check": "npm run lint && npm test",
     "icons": "python3 scripts/make-icons.py"
   }
 }

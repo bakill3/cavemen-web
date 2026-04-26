@@ -2,9 +2,35 @@
 (function () {
   var dom = globalThis.CavemanWeb.dom;
 
+  function isContentEditable(el) {
+    if (!el) return false;
+    var ce = el.getAttribute && el.getAttribute("contenteditable");
+    return ce === "" || ce === "true" || ce === "plaintext-only";
+  }
+
+  function isFormField(el) {
+    if (!el) return false;
+    return el.tagName === "TEXTAREA" || el.tagName === "INPUT";
+  }
+
+  function isProbablyPromptEditor(el) {
+    if (!el) return false;
+    if (!dom.isVisible(el)) return false;
+    if (el.disabled) return false;
+    if (el.readOnly) return false;
+    if (el.getAttribute && el.getAttribute("aria-disabled") === "true") return false;
+    if (isFormField(el)) {
+      if (el.type && /^(button|submit|reset|hidden|file|image|checkbox|radio)$/i.test(el.type)) return false;
+      return true;
+    }
+    if (isContentEditable(el)) return true;
+    var role = el.getAttribute && el.getAttribute("role");
+    return role === "textbox" || role === "combobox";
+  }
+
   function setEditorText(el, text) {
     if (!el) return;
-    if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
+    if (isFormField(el)) {
       dom.setTextareaValue(el, text);
     } else {
       dom.setContentEditableText(el, text);
@@ -13,7 +39,7 @@
 
   function getEditorText(el) {
     if (!el) return "";
-    if (el.tagName === "TEXTAREA" || el.tagName === "INPUT") return el.value || "";
+    if (isFormField(el)) return el.value || "";
     return dom.getContentEditableText(el);
   }
 
@@ -50,13 +76,17 @@
       'div[contenteditable="true"]',
       '[role="textbox"]'
     ];
+    var fallback = null;
     for (var i = 0; i < selectors.length; i++) {
       var nodes = document.querySelectorAll(selectors[i]);
       for (var j = 0; j < nodes.length; j++) {
-        if (dom.isVisible(nodes[j])) return nodes[j];
+        var n = nodes[j];
+        if (!isProbablyPromptEditor(n)) continue;
+        if (document.activeElement === n) return n;
+        if (!fallback) fallback = n;
       }
     }
-    return null;
+    return fallback;
   }
 
   function genericSend(editor) {
@@ -270,6 +300,11 @@
     return fallback;
   }
 
+  function getActiveSite() {
+    var a = pickAdapter();
+    return (a && a.key) || null;
+  }
+
   globalThis.CavemanWeb = globalThis.CavemanWeb || {};
   globalThis.CavemanWeb.adapters = {
     chatgpt: chatgpt,
@@ -281,6 +316,8 @@
     perplexity: perplexity,
     poe: poe,
     fallback: fallback,
-    pickAdapter: pickAdapter
+    pickAdapter: pickAdapter,
+    getActiveSite: getActiveSite,
+    isProbablyPromptEditor: isProbablyPromptEditor
   };
 })();

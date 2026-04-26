@@ -62,8 +62,7 @@ isolated to the extension and is removed when you uninstall it.
 | `debug` | boolean | Enables console logging in the page DevTools |
 | `sites` | object | Per-site enable flags |
 | `customPrompts` | object | Optional per-site instruction text you write |
-| `assumedOutputSavingPct` | number | Used by the stats estimator |
-| `stats` | object | Four integer counters (see below) |
+| `stats` | object | Five integer counters (see below) |
 
 ### Stats are integers only
 
@@ -72,7 +71,8 @@ stats: {
   promptsEnhanced:      <integer>,
   instructionTokens:    <integer>,
   userPromptTokens:     <integer>,
-  estSavedOutputTokens: <integer>
+  estSavedOutputTokens: <integer>,
+  estNetSavedTokens:    <integer>
 }
 ```
 

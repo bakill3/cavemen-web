@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Token estimate card in the popup with prompts enhanced, estimated saved
+  output tokens, instruction tokens added, and estimated net tokens saved.
+- Per-mode output saving rates (Lite 20%, Full 40%, Ultra 60%, Wenyan 65%)
+  in `src/shared/token-estimator.js`. Replaces the single
+  `assumedOutputSavingPct` knob.
+- New `estNetSavedTokens` integer counter in stats.
+- Status pill in the popup header that reflects the on/off state at a glance.
+- "How it works" and "Before / after" collapsibles in the popup.
+- Site adapter helpers: `isProbablyPromptEditor` and `getActiveSite`. The
+  generic editor finder now prefers the focused element, filters out
+  hidden, disabled, and read-only nodes, and ignores non-text inputs.
+- Preview-before-send panel now shows Original, Enhanced, and three buttons
+  (Cancel, Send original, Send enhanced). Sending the original does not
+  bump token estimates.
+- `npm test` runs lightweight Node checks for the prompt builder and the
+  token estimator. `npm run check` runs lint plus tests.
 - Per-site custom prompts.
 - Prepend or append placement for Caveman instructions.
 - Optional editable preview before sending.
@@ -33,9 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   available, pure-Python fallback otherwise).
 
 ### Changed
+- Mode instruction strings sharpened to better match the original Caveman
+  identity: terse, direct, no filler, no pleasantries, no hedging,
+  fragments OK, technical accuracy preserved.
 - Marker regex widened to detect (a) the `[Caveman <mode>]` tag,
   (b) any of the four mode instructions verbatim, and (c) the lite-mode
-  opening sentence - closes the paste-from-prior-chat double-prefix gap.
+  opening sentence. Closes the paste-from-prior-chat double-prefix gap.
 - DeepSeek send-button selector is now scoped to the editor's container,
   with a typed-button preference, to avoid matching unrelated
   `div[role="button"]` elements elsewhere on the page.

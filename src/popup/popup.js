@@ -20,87 +20,163 @@
   var copy = {
     en: {
       tagline: "Make AI answer shorter.",
+      statusOn: "On",
+      statusOff: "Off",
       enable: "Enable Caveman",
       mode: "Mode",
+      tokens: "Token estimate",
       sites: "Sites",
       send: "Send",
       preview: "Preview before send",
       hotkeys: "Hotkeys",
       placement: "Instruction",
       language: "UI",
+      before: "Before prompt",
+      after: "After prompt",
       hotkeyHelp: "Ctrl+Shift+M cycles mode. Ctrl+Shift+E toggles the extension.",
       custom: "Custom prompt",
+      clearCustom: "clear custom prompt",
       display: "Display",
       badge: "Show badge",
       visible: "Visible injection",
       visibleHelp: "Hidden request editing stays off. It needs broader powers and is harder to trust.",
       advanced: "Advanced",
       debug: "Debug logging",
-      statsHelp: "Stats are local estimates. No chat text is stored.",
-      footer: "No tracking. No chat storage. Local only."
+      reset: "reset",
+      statPrompts: "prompts enhanced",
+      statSaved: "est. saved output tokens",
+      statInstr: "instruction tokens added",
+      statNet: "est. net tokens saved",
+      statsHelp: "Estimates only. No chat text stored.",
+      howTitle: "How it works",
+      how1: "You write your message normally.",
+      how2: "Caveman Web adds a short instruction locally before send.",
+      how3: "The AI site answers shorter. Sometimes a lot shorter.",
+      how4: "Settings stay on your device. Token counts are estimates.",
+      examplesTitle: "Before / after",
+      exNormal: "Normal",
+      exCaveman: "Caveman",
+      footer: "Local only. No tracking. No chat storage."
     },
     pt: {
       tagline: "Faz a IA responder mais curto.",
+      statusOn: "Ligado",
+      statusOff: "Desligado",
       enable: "Ativar Caveman",
       mode: "Modo",
+      tokens: "Estimativa de tokens",
       sites: "Sites",
       send: "Envio",
       preview: "Prévia antes de enviar",
       hotkeys: "Atalhos",
       placement: "Instrução",
       language: "UI",
+      before: "Antes do prompt",
+      after: "Depois do prompt",
       hotkeyHelp: "Ctrl+Shift+M troca o modo. Ctrl+Shift+E liga ou desliga.",
       custom: "Prompt custom",
+      clearCustom: "limpar prompt custom",
       display: "Tela",
       badge: "Mostrar badge",
       visible: "Injeção visível",
       visibleHelp: "Edição escondida de request fica desligada. Pede poderes demais.",
       advanced: "Avançado",
       debug: "Log de debug",
-      statsHelp: "Stats são estimativas locais. Nenhum chat é salvo.",
-      footer: "Sem tracking. Sem salvar chat. Tudo local."
+      reset: "zerar",
+      statPrompts: "prompts melhorados",
+      statSaved: "tokens de saída poupados (est.)",
+      statInstr: "tokens de instrução adicionados",
+      statNet: "tokens líquidos poupados (est.)",
+      statsHelp: "Só estimativas. Nenhum chat é salvo.",
+      howTitle: "Como funciona",
+      how1: "Você escreve normal.",
+      how2: "Caveman Web adiciona uma instrução curta antes do envio, local.",
+      how3: "O site de IA responde mais curto. Às vezes muito mais.",
+      how4: "Configurações ficam no seu aparelho. Contagens são estimativas.",
+      examplesTitle: "Antes / depois",
+      exNormal: "Normal",
+      exCaveman: "Caveman",
+      footer: "Tudo local. Sem tracking. Sem salvar chat."
     },
     zh: {
       tagline: "让 AI 回答更短。",
+      statusOn: "开",
+      statusOff: "关",
       enable: "启用 Caveman",
       mode: "模式",
+      tokens: "Token 估算",
       sites: "网站",
       send: "发送",
       preview: "发送前预览",
       hotkeys: "快捷键",
       placement: "指令位置",
       language: "界面",
+      before: "放在 prompt 前",
+      after: "放在 prompt 后",
       hotkeyHelp: "Ctrl+Shift+M 切换模式。Ctrl+Shift+E 开关扩展。",
       custom: "自定义提示",
+      clearCustom: "清除自定义提示",
       display: "显示",
       badge: "显示标记",
       visible: "显示注入内容",
       visibleHelp: "不做隐藏请求改写。权限更大，也更难信任。",
       advanced: "高级",
       debug: "调试日志",
-      statsHelp: "统计只是本地估算。不保存聊天内容。",
-      footer: "无跟踪。不保存聊天。只在本地。"
+      reset: "重置",
+      statPrompts: "已增强的 prompt",
+      statSaved: "估算节省输出 token",
+      statInstr: "指令增加的 token",
+      statNet: "估算净节省 token",
+      statsHelp: "仅为估算。不保存聊天内容。",
+      howTitle: "如何工作",
+      how1: "你正常输入。",
+      how2: "Caveman Web 在发送前本地加一段简短指令。",
+      how3: "AI 回答更短。有时短很多。",
+      how4: "设置保留在本机。Token 数为估算。",
+      examplesTitle: "前 / 后",
+      exNormal: "普通",
+      exCaveman: "Caveman",
+      footer: "本地运行。无跟踪。不保存聊天。"
     },
     ja: {
       tagline: "AI の返事を短くする。",
+      statusOn: "オン",
+      statusOff: "オフ",
       enable: "Caveman を有効化",
       mode: "モード",
+      tokens: "トークン概算",
       sites: "サイト",
       send: "送信",
       preview: "送信前に確認",
       hotkeys: "ショートカット",
       placement: "指示",
       language: "UI",
+      before: "プロンプトの前",
+      after: "プロンプトの後",
       hotkeyHelp: "Ctrl+Shift+M でモード切替。Ctrl+Shift+E でオンオフ。",
       custom: "カスタムプロンプト",
+      clearCustom: "カスタムを消す",
       display: "表示",
       badge: "バッジを表示",
       visible: "注入を表示",
       visibleHelp: "隠しリクエスト編集は使いません。権限が広くなりすぎます。",
       advanced: "詳細",
       debug: "デバッグログ",
-      statsHelp: "統計はローカル推定です。チャット文は保存しません。",
-      footer: "追跡なし。チャット保存なし。ローカルだけ。"
+      reset: "リセット",
+      statPrompts: "強化したプロンプト",
+      statSaved: "節約推定 出力トークン",
+      statInstr: "指示で増えたトークン",
+      statNet: "純節約 推定トークン",
+      statsHelp: "概算のみ。チャット文は保存しません。",
+      howTitle: "仕組み",
+      how1: "普通に入力する。",
+      how2: "送信前に Caveman Web が短い指示をローカルで追加する。",
+      how3: "AI の返事が短くなる。時にはかなり短く。",
+      how4: "設定は端末内。トークン数は概算。",
+      examplesTitle: "ビフォー / アフター",
+      exNormal: "普通",
+      exCaveman: "Caveman",
+      footer: "ローカルのみ。追跡なし。チャット保存なし。"
     }
   };
 
@@ -121,6 +197,7 @@
   function render() {
     applyLanguage();
     $("#enabled").checked = !!state.enabled;
+    renderStatusPill();
     $$('input[name="mode"]').forEach(function (r) { r.checked = (r.value === state.mode); });
     $$('input[data-site]').forEach(function (c) {
       c.checked = state.sites[c.dataset.site] !== false;
@@ -136,6 +213,16 @@
     renderCustomPrompt();
     renderPreview();
     renderStats();
+  }
+
+  function renderStatusPill() {
+    var pill = $("#status-pill");
+    if (!pill) return;
+    var dict = copy[state.uiLanguage] || copy.en;
+    var on = !!state.enabled;
+    pill.textContent = on ? dict.statusOn : dict.statusOff;
+    pill.classList.toggle("on", on);
+    pill.classList.toggle("off", !on);
   }
 
   function applyLanguage() {
@@ -169,14 +256,21 @@
   }
 
   function renderStats() {
-    $("#stat-prompts").textContent = state.stats.promptsEnhanced || 0;
-    $("#stat-instr").textContent = state.stats.instructionTokens || 0;
-    $("#stat-user").textContent = state.stats.userPromptTokens || 0;
-    $("#stat-saved").textContent = state.stats.estSavedOutputTokens || 0;
+    var s = state.stats || {};
+    $("#stat-prompts").textContent = s.promptsEnhanced || 0;
+    $("#stat-instr").textContent = s.instructionTokens || 0;
+    $("#stat-saved").textContent = s.estSavedOutputTokens || 0;
+    var net = s.estNetSavedTokens;
+    if (typeof net !== "number") {
+      net = Math.max(0, (s.estSavedOutputTokens || 0) - (s.instructionTokens || 0));
+    }
+    $("#stat-net").textContent = net;
   }
 
   function bind() {
-    $("#enabled").addEventListener("change", function (e) { save({ enabled: e.target.checked }); });
+    $("#enabled").addEventListener("change", function (e) {
+      save({ enabled: e.target.checked }).then(renderStatusPill);
+    });
 
     $$('input[name="mode"]').forEach(function (r) {
       r.addEventListener("change", function (e) {
@@ -232,7 +326,8 @@
         promptsEnhanced: 0,
         instructionTokens: 0,
         userPromptTokens: 0,
-        estSavedOutputTokens: 0
+        estSavedOutputTokens: 0,
+        estNetSavedTokens: 0
       };
       state.stats = fresh;
       save({ stats: fresh }).then(renderStats);
